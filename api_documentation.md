@@ -2,31 +2,13 @@
 
 ## Authentication
 
-### Obtain Authentication Token
-**Endpoint:** `POST /auth/`
+See Djoser docs for [Base Endpoints](https://djoser.readthedocs.io/en/latest/base_endpoints.html) and [Token Endpoints](https://djoser.readthedocs.io/en/latest/token_endpoints.html).
 
-**Description:**  
-Obtain an authentication token for API access. The token should be included in the `Authorization` header for subsequent requests as `Token <your_token>`.
+Following operations requires a token acquired from the token endpoint. Put it inside the header like:
 
-**Request:**
-```json
-{
-    "username": "your_username",
-    "password": "your_password"
-}
-```
-
-**Response:**
-```json
-{
-    "token": "your_auth_token"
-}
-```
-
-**Notes:**
-- All API endpoints require authentication by default
-- Uses Token Authentication
-- Token should be included in the Authorization header for all requests
+````http
+Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+````
 
 ## File Operations
 
