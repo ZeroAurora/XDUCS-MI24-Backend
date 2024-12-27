@@ -4,7 +4,7 @@
 
 See Djoser docs for [Base Endpoints](https://djoser.readthedocs.io/en/latest/base_endpoints.html) and [Token Endpoints](https://djoser.readthedocs.io/en/latest/token_endpoints.html).
 
-Following operations requires a token acquired from the token endpoint. Put it inside the header like:
+Following operation requires a token acquired from the token endpoint. Put it inside the header like:
 
 ````http
 Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
