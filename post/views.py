@@ -1,8 +1,9 @@
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Post, AttachedImage, Comment, Like
+from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
+from file.models import MediaFile
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -12,9 +13,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         post = serializer.save(user=self.request.user)
-        images = self.request.FILES.getlist("images")
-        for image in images:
-            AttachedImage.objects.create(post=post, image=image)
+        media_file_ids = self.request.data.get("media_files", [])
+        media_files = MediaFile.objects.filter(id__in=media_file_ids, owner=self.request.user)
+        post.media_files.set(media_files)
 
     @action(detail=True, methods=["post"])
     def like(self, request, pk=None):

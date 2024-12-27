@@ -9,11 +9,6 @@ from .serializers import ProfileSerializer, FollowerSerializer
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
-    def list(self, request):
-        queryset = Profile.objects.all()
-        serializer = ProfileSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def retrieve(self, request, pk=None):
         try:
             user = User.objects.get(pk=pk)
@@ -22,6 +17,12 @@ class UserViewSet(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=["get"])
+    def is_following(self, request, pk=None):
+        followed_user = User.objects.get(pk=pk)
+        is_following = Follower.objects.filter(follower=request.user, followed=followed_user).exists()
+        return Response({"is_following": is_following}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def follow(self, request, pk=None):

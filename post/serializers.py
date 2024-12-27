@@ -1,12 +1,7 @@
 from rest_framework import serializers
-from .models import Post, AttachedImage, Comment, Like
+from .models import Post, Comment, Like
 from user.serializers import UserSerializer
-
-
-class AttachedImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AttachedImage
-        fields = ["id", "image"]
+from file.serializers import MediaFileSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -27,10 +22,10 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    images = AttachedImageSerializer(many=True)
+    media_files = MediaFileSerializer(many=True, read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     likes = LikeSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "created_at", "updated_at", "images", "comments", "likes"]
+        fields = ["id", "user", "content", "created_at", "updated_at", "media_files", "comments", "likes"]

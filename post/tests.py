@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from post.models import Post, AttachedImage, Comment, Like
+from post.models import Post, Comment, Like
 from django.core.files.uploadedfile import SimpleUploadedFile
+from file.models import MediaFile
 
 
 class PostModelTests(TestCase):
@@ -36,18 +37,49 @@ class PostModelTests(TestCase):
         self.assertEqual(comment.replies.count(), 1)
         self.assertEqual(reply.parent, comment)
 
+    def test_post_update(self):
+        post = Post.objects.create(user=self.user, content="Initial content")
+        post.content = "Updated content"
+        post.save()
 
-class AttachedImageModelTests(TestCase):
+        updated_post = Post.objects.get(id=post.id)
+        self.assertEqual(updated_post.content, "Updated content")
+        self.assertNotEqual(updated_post.created_at, updated_post.updated_at)
+
+
+class PostMediaFilesModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username="testuser", password="testpass123")
         cls.post = Post.objects.create(user=cls.user, content="Test post")
+        cls.media_file = MediaFile.objects.create(
+            file=SimpleUploadedFile(name="test_image.jpg", content=b"file_content", content_type="image/jpeg"),
+            owner=cls.user,
+        )
 
-    def test_image_creation(self):
-        image = SimpleUploadedFile(name="test_image.jpg", content=b"file_content", content_type="image/jpeg")
-        attached_image = AttachedImage.objects.create(post=self.post, image=image)
-        self.assertEqual(attached_image.post, self.post)
-        self.assertTrue(attached_image.image.name.startswith("post_images/"))
+    def test_post_media_files_relationship(self):
+        # Add media file to post
+        self.post.media_files.add(self.media_file)
+
+        # Verify the relationship
+        self.assertEqual(self.post.media_files.count(), 1)
+        self.assertEqual(self.post.media_files.first(), self.media_file)
+        self.assertEqual(self.media_file.owner, self.user)
+
+    def test_multiple_media_files(self):
+        # Create additional media file
+        media_file2 = MediaFile.objects.create(
+            file=SimpleUploadedFile(name="test_image2.jpg", content=b"file_content", content_type="image/jpeg"),
+            owner=self.user,
+        )
+
+        # Add both media files to post
+        self.post.media_files.add(self.media_file, media_file2)
+
+        # Verify both files are associated
+        self.assertEqual(self.post.media_files.count(), 2)
+        self.assertIn(self.media_file, self.post.media_files.all())
+        self.assertIn(media_file2, self.post.media_files.all())
 
 
 class CommentModelTests(TestCase):
