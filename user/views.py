@@ -57,7 +57,7 @@ class ProfileViewSet(viewsets.ViewSet):
         serializer = FollowRelationshipSerializer(follower)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['delete'])
+    @action(detail=True, methods=['post'])
     def unfollow(self, request, pk=None):
         """Unfollow another user"""
         followed_user = User.objects.get(pk=pk)

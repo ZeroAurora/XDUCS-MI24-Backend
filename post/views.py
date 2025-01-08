@@ -26,7 +26,7 @@ class ContentViewSet(viewsets.ModelViewSet):
         serializer = LikeSerializer(like)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["delete"])
+    @action(detail=True, methods=["post"])
     def unlike(self, request, pk=None):
         content = self.get_object()
         try:

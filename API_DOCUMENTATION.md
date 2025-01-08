@@ -3,11 +3,11 @@
 ## Authentication
 All endpoints require authentication using a token. Obtain a token by sending a POST request to `/auth/token/login/` with username and password.
 
-## Users
+## Profiles
 
-### Get User Profile
-`GET /users/{id}/`
-- Returns: Profile details
+### Get Current User Profile
+`GET /profiles/me/`
+- Returns: Current user's profile
 - Response Schema:
 ```json
 {
@@ -18,15 +18,33 @@ All endpoints require authentication using a token. Obtain a token by sending a 
   },
   "bio": "string",
   "profile_picture": "integer|null",
+  "background_image": "integer|null",
   "date_of_birth": "string|null (YYYY-MM-DD)",
   "location": "string",
   "following_count": "integer",
-  "follower_count": "integer"
+  "follower_count": "integer",
+  "is_following": "boolean"
 }
 ```
 
+### Update Current User Profile
+`PUT /profiles/me/`
+- Parameters:
+  - bio: string (optional)
+  - profile_picture: integer (optional)
+  - background_image: integer (optional)
+  - date_of_birth: string (optional, YYYY-MM-DD)
+  - location: string (optional)
+- Returns: Updated profile
+- Response Schema: Same as GET /profiles/me/
+
+### Get User Profile
+`GET /profiles/{id}/profile/`
+- Returns: Profile details
+- Response Schema: Same as GET /profiles/me/
+
 ### Follow User
-`POST /users/{id}/follow/`
+`POST /profiles/{id}/follow/`
 - Returns: Follow relationship details
 - Response Schema:
 ```json
@@ -45,11 +63,11 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 ```
 
 ### Unfollow User
-`DELETE /users/{id}/unfollow/`
+`POST /profiles/{id}/unfollow/`
 - Returns: 204 No Content
 
 ### Get User Followers
-`GET /users/{id}/followers/`
+`GET /profiles/{id}/followers/`
 - Returns: List of followers
 - Response Schema:
 ```json
@@ -66,7 +84,7 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 ```
 
 ### Get User Following
-`GET /users/{id}/following/`
+`GET /profiles/{id}/following/`
 - Returns: List of followed users
 - Response Schema:
 ```json
@@ -83,7 +101,7 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 ```
 
 ### Check Follow Status
-`GET /users/{id}/is_following/`
+`GET /profiles/{id}/is_following/`
 - Returns: Follow status
 - Response Schema:
 ```json
@@ -92,32 +110,12 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 }
 ```
 
-### Current User Profile
-`GET /users/profile/`
-- Returns: Current user's profile
-- Response Schema:
-```json
-{
-  "id": "integer",
-  "user": {
-    "id": "integer",
-    "username": "string"
-  },
-  "bio": "string",
-  "profile_picture": "integer|null",
-  "date_of_birth": "string|null (YYYY-MM-DD)",
-  "location": "string",
-  "following_count": "integer",
-  "follower_count": "integer"
-}
-```
-
 ## Posts
 
 ### Create Post
 `POST /posts/`
 - Parameters:
-  - content: string
+  - content: string (required)
   - media_files: array of file IDs (optional)
 - Returns: Created post details
 - Response Schema:
@@ -139,10 +137,35 @@ All endpoints require authentication using a token. Obtain a token by sending a 
       "created_at": "string (ISO 8601 datetime)"
     }
   ],
-  "comments": [],
-  "likes": []
+  "likes": [
+    {
+      "id": "integer",
+      "user": {
+        "id": "integer",
+        "username": "string"
+      },
+      "created_at": "string (ISO 8601 datetime)"
+    }
+  ]
 }
 ```
+
+### Get Post
+`GET /posts/{id}/`
+- Returns: Post details
+- Response Schema: Same as POST /posts/
+
+### Update Post
+`PUT /posts/{id}/`
+- Parameters:
+  - content: string (required)
+  - media_files: array of file IDs (optional)
+- Returns: Updated post
+- Response Schema: Same as POST /posts/
+
+### Delete Post
+`DELETE /posts/{id}/`
+- Returns: 204 No Content
 
 ### Like Post
 `POST /posts/{id}/like/`
@@ -160,7 +183,7 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 ```
 
 ### Unlike Post
-`DELETE /posts/{id}/unlike/`
+`POST /posts/{id}/unlike/`
 - Returns: 204 No Content
 
 ### Get Post Comments
@@ -185,19 +208,60 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 ### Add Comment
 `POST /posts/{id}/comments/`
 - Parameters:
-  - content: string
+  - content: string (required)
 - Returns: Created comment
+- Response Schema: Same as GET /posts/{id}/comments/
+
+## Notifications
+
+### Get Notifications
+`GET /notifications/`
+- Returns: List of notifications
+- Response Schema:
+```json
+[
+  {
+    "id": "integer",
+    "user": {
+      "id": "integer",
+      "username": "string"
+    },
+    "content": {
+      "id": "integer",
+      "user": {
+        "id": "integer",
+        "username": "string"
+      },
+      "content": "string",
+      "created_at": "string (ISO 8601 datetime)",
+      "updated_at": "string (ISO 8601 datetime)",
+      "media_files": [],
+      "likes": []
+    },
+    "notification_type": "string (like|comment|reply)",
+    "created_at": "string (ISO 8601 datetime)",
+    "is_read": "boolean"
+  }
+]
+```
+
+### Mark Notification as Read
+`POST /notifications/{id}/mark_as_read/`
+- Returns: Success status
 - Response Schema:
 ```json
 {
-  "id": "integer",
-  "user": {
-    "id": "integer",
-    "username": "string"
-  },
-  "content": "string",
-  "created_at": "string (ISO 8601 datetime)",
-  "updated_at": "string (ISO 8601 datetime)"
+  "status": "string"
+}
+```
+
+### Mark All Notifications as Read
+`POST /notifications/mark_all_as_read/`
+- Returns: Success status
+- Response Schema:
+```json
+{
+  "status": "string"
 }
 ```
 
@@ -205,9 +269,7 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 
 ### Upload File
 `POST /files/`
-- Content-Type: multipart/form-data
-- Parameters:
-  - file: binary
+- Request: The file uploading
 - Returns: File details
 - Response Schema:
 ```json
@@ -234,56 +296,6 @@ All endpoints require authentication using a token. Obtain a token by sending a 
 ]
 ```
 
-## Notifications
-
-### Get Notifications
-`GET /notifications/notifications/`
-- Returns: List of notifications
-- Response Schema:
-```json
-[
-  {
-    "id": "integer",
-    "user": {
-      "id": "integer",
-      "username": "string"
-    },
-    "post": {
-      "id": "integer",
-      "user": {
-        "id": "integer",
-        "username": "string"
-      },
-      "content": "string",
-      "created_at": "string (ISO 8601 datetime)",
-      "updated_at": "string (ISO 8601 datetime)",
-      "media_files": [],
-      "comments": [],
-      "likes": []
-    },
-    "comment": "integer|null",
-    "notification_type": "string (like|comment|reply)",
-    "created_at": "string (ISO 8601 datetime)",
-    "is_read": "boolean"
-  }
-]
-```
-
-### Mark Notification as Read
-`POST /notifications/notifications/{id}/mark_as_read/`
-- Returns: Success status
-- Response Schema:
-```json
-{
-  "status": "string"
-}
-```
-
-### Mark All Notifications as Read
-`POST /notifications/notifications/mark_all_as_read/`
-- Returns: Success status
-- Response Schema:
-```json
-{
-  "status": "string"
-}
+### Delete File
+`DELETE /files/{id}/`
+- Returns: 204 No Content
