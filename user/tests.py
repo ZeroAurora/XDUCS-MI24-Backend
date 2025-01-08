@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from user.models import Profile, Follower
+from user.models import Profile, FollowRelationship
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 
@@ -49,17 +49,17 @@ class FollowerModelTests(TestCase):
         cls.user2 = User.objects.create_user(username="user2", password="testpass123")
 
     def test_follower_creation(self):
-        follower = Follower.objects.create(follower=self.user1, followed=self.user2)
+        follower = FollowRelationship.objects.create(follower=self.user1, followed=self.user2)
         self.assertEqual(follower.follower, self.user1)
         self.assertEqual(follower.followed, self.user2)
         self.assertIsNotNone(follower.created_at)
 
     def test_unique_follower_followed_constraint(self):
-        Follower.objects.create(follower=self.user1, followed=self.user2)
+        FollowRelationship.objects.create(follower=self.user1, followed=self.user2)
         with self.assertRaises(Exception):
-            Follower.objects.create(follower=self.user1, followed=self.user2)
+            FollowRelationship.objects.create(follower=self.user1, followed=self.user2)
 
     def test_follower_str_representation(self):
-        follower = Follower.objects.create(follower=self.user1, followed=self.user2)
+        follower = FollowRelationship.objects.create(follower=self.user1, followed=self.user2)
         expected_str = f"{self.user1.username} follows {self.user2.username}"
         self.assertEqual(str(follower), expected_str)

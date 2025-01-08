@@ -1,15 +1,7 @@
 from rest_framework import serializers
-from .models import Post, Comment, Like
+from .models import Content, Like
 from user.serializers import DjangoUserSerializer
 from file.serializers import MediaFileSerializer
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    user = DjangoUserSerializer(read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = ["id", "user", "content", "created_at", "updated_at"]
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -20,12 +12,19 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = ["id", "user", "created_at"]
 
 
-class PostSerializer(serializers.ModelSerializer):
+class ContentSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer(read_only=True)
     media_files = MediaFileSerializer(many=True, read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
     likes = LikeSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Post
-        fields = ["id", "user", "content", "created_at", "updated_at", "media_files", "comments", "likes"]
+        model = Content
+        fields = [
+            "id",
+            "user",
+            "content",
+            "created_at",
+            "updated_at",
+            "media_files",
+            "likes",
+        ]

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import Profile, Follower
+from .models import Profile, FollowRelationship
 
 
 class ProfileInline(admin.StackedInline):
@@ -22,7 +22,7 @@ class CustomUserAdmin(UserAdmin):
         return super().get_inline_instances(request, obj)
 
 
-@admin.register(Follower)
+@admin.register(FollowRelationship)
 class FollowerAdmin(admin.ModelAdmin):
     list_display = ("follower", "followed", "created_at")
     list_filter = ("created_at",)

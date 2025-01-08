@@ -7,6 +7,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     profile_picture = models.ForeignKey(MediaFile, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
+    background_image = models.ForeignKey(MediaFile, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     date_of_birth = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=100, blank=True)
 
@@ -14,7 +15,7 @@ class Profile(models.Model):
         return self.user.username
 
 
-class Follower(models.Model):
+class FollowRelationship(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
     followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers")
     created_at = models.DateTimeField(auto_now_add=True)
