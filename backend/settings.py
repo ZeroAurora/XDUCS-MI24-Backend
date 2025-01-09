@@ -148,3 +148,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser",
     ],
 }
+
+# Django CORS
+# Do not set this to True in production
+CORS_ALLOW_ALL_ORIGINS = True
