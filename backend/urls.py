@@ -1,5 +1,6 @@
 from django.urls import path, include
 from django.contrib import admin
+from django.conf.urls.static import static
 from rest_framework import routers
 from user.views import ProfileViewSet
 from post.views import ContentViewSet
@@ -19,4 +20,4 @@ urlpatterns = [
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.authtoken")),
     path("", include(router.urls)),
-]
+] + static("/media/", document_root="media")
