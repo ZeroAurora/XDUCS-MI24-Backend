@@ -26,7 +26,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             "location",
             "following_count",
             "follower_count",
-            "is_following",
         ]
 
     def get_following_count(self, obj):
