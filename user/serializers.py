@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from file.serializers import MediaFileSerializer
 from .models import Profile, FollowRelationship
 
 
@@ -11,6 +12,7 @@ class DjangoUserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer(read_only=True)
+    profile_picture = MediaFileSerializer(read_only=True)
     following_count = serializers.SerializerMethodField(read_only=True)
     follower_count = serializers.SerializerMethodField(read_only=True)
 
