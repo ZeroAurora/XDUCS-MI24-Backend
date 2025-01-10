@@ -10,6 +10,13 @@ class ContentViewSet(viewsets.ModelViewSet):
     queryset = Content.objects.filter(parent__isnull=True)  # Only top-level posts
     serializer_class = ContentSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.kwargs.get("post_pk"):
+            # this comes from nested comment router
+            return Content.objects.filter(parent=self.kwargs["post_pk"])
+        else:
+            return Content.objects.filter(parent__isnull=True)
     
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
@@ -46,17 +53,4 @@ class ContentViewSet(viewsets.ModelViewSet):
         content = self.get_object()
         likes = Like.objects.filter(content=content)
         serializer = LikeSerializer(likes, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=["get", "post"])
-    def comments(self, request, pk=None):
-        content = self.get_object()
-        if request.method == "POST":
-            serializer = ContentSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(user=request.user, parent=content)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        comments = Content.objects.filter(parent=content)
-        serializer = ContentSerializer(comments, many=True, context={"request": self.request})
         return Response(serializer.data)

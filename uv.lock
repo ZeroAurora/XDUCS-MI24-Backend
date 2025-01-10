@@ -195,6 +195,19 @@ wheels = [
 ]
 
 [[package]]
+name = "drf-nested-routers"
+version = "0.94.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "djangorestframework" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1e/24/9e6a070dc491a416c93e4ec41950c7ea66d6a63b8db8d8abc0c128355978/drf-nested-routers-0.94.1.tar.gz", hash = "sha256:2b846385ed95c9f17bf4242db3b264ac826b5af00dda6c737d3fe7cc7bf2c7db", size = 18347 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/a2/313a95268ffae9773a59aeb15c3f6932d4c905616d4797b371e6257fc8f9/drf_nested_routers-0.94.1-py2.py3-none-any.whl", hash = "sha256:3a8ec45a025c0f39188ec1ec415244beb875a6f4db87911a1f5a606d09b68c9f", size = 36260 },
+]
+
+[[package]]
 name = "idna"
 version = "3.10"
 source = { registry = "https://pypi.org/simple" }
@@ -399,6 +412,7 @@ dependencies = [
     { name = "django-cors-headers" },
     { name = "djangorestframework" },
     { name = "djoser" },
+    { name = "drf-nested-routers" },
     { name = "pillow" },
 ]
 
@@ -412,6 +426,7 @@ requires-dist = [
     { name = "django-cors-headers", specifier = ">=4.6.0" },
     { name = "djangorestframework", specifier = ">=3.15.2" },
     { name = "djoser", specifier = ">=2.3.1" },
+    { name = "drf-nested-routers", specifier = ">=0.94.1" },
     { name = "pillow", specifier = ">=11.0.0" },
 ]
 
