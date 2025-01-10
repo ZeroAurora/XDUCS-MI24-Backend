@@ -41,4 +41,4 @@ class ContentSerializer(serializers.ModelSerializer):
         return obj.likes.count()
     
     def get_comment_count(self, obj):
-        return obj.comments.count()
+        return obj.children.count()
