@@ -19,6 +19,7 @@ class ContentSerializer(serializers.ModelSerializer):
     profile = serializers.SerializerMethodField(read_only=True)
     media_files = MediaFileSerializer(many=True, read_only=True)
     like_count = serializers.SerializerMethodField(read_only=True)
+    comment_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Content
@@ -37,3 +38,6 @@ class ContentSerializer(serializers.ModelSerializer):
     
     def get_like_count(self, obj):
         return obj.likes.count()
+    
+    def get_comment_count(self, obj):
+        return obj.comments.count()
