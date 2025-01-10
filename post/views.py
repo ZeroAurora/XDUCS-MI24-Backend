@@ -10,6 +10,11 @@ class ContentViewSet(viewsets.ModelViewSet):
     queryset = Content.objects.filter(parent__isnull=True)  # Only top-level posts
     serializer_class = ContentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    def get_serializer_context(self):
+        ctx = super().get_serializer_context()
+        ctx.request = self.request
+        return ctx
 
     def perform_create(self, serializer):
         content = serializer.save(user=self.request.user)

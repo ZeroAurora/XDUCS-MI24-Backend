@@ -20,6 +20,7 @@ class ContentSerializer(serializers.ModelSerializer):
     media_files = MediaFileSerializer(many=True, read_only=True)
     like_count = serializers.SerializerMethodField(read_only=True)
     comment_count = serializers.SerializerMethodField(read_only=True)
+    is_liked = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Content
@@ -32,6 +33,7 @@ class ContentSerializer(serializers.ModelSerializer):
             "media_files",
             "like_count",
             "comment_count"
+            "is_liked",
         ]
 
     def get_profile(self, obj):
@@ -42,3 +44,8 @@ class ContentSerializer(serializers.ModelSerializer):
     
     def get_comment_count(self, obj):
         return obj.children.count()
+    
+    def get_is_liked(self, obj):
+        """Note: requires request context"""
+        user = self.context["request"].user
+        return Like.objects.filter(user=user, content=obj).exists()
