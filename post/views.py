@@ -58,5 +58,5 @@ class ContentViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         comments = Content.objects.filter(parent=content)
-        serializer = ContentSerializer(comments, many=True)
+        serializer = ContentSerializer(comments, many=True, context={"request": self.request})
         return Response(serializer.data)
