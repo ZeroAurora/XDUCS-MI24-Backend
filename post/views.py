@@ -13,7 +13,7 @@ class ContentViewSet(viewsets.ModelViewSet):
     
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx.request = self.request
+        ctx["request"] = self.request
         return ctx
 
     def perform_create(self, serializer):
