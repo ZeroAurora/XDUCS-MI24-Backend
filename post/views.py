@@ -35,6 +35,13 @@ class ContentViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Like.DoesNotExist:
             return Response({"detail": "You have not liked this content"}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=True, methods=["get"])
+    def likes(self, request, pk=None):
+        content = self.get_object()
+        likes = Like.objects.filter(content=content)
+        serializer = LikeSerializer(likes, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=["get", "post"])
     def comments(self, request, pk=None):

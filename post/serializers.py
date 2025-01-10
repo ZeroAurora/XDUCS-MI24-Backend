@@ -5,15 +5,20 @@ from file.serializers import MediaFileSerializer
 
 
 class LikeSerializer(serializers.ModelSerializer):
+    profile = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Like
-        fields = ["id", "user", "created_at"]
+        fields = ["id", "profile", "created_at"]
+    
+    def get_profile(self, obj):
+        return ProfileSerializer(obj.user.profile).data
 
 
 class ContentSerializer(serializers.ModelSerializer):
     profile = serializers.SerializerMethodField(read_only=True)
     media_files = MediaFileSerializer(many=True, read_only=True)
-    likes = LikeSerializer(many=True, read_only=True)
+    like_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Content
@@ -24,8 +29,11 @@ class ContentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "media_files",
-            "likes",
+            "like_count",
         ]
 
     def get_profile(self, obj):
         return ProfileSerializer(obj.user.profile).data
+    
+    def get_like_count(self, obj):
+        return obj.likes.count()
