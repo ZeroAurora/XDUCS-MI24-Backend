@@ -32,7 +32,7 @@ class ContentSerializer(serializers.ModelSerializer):
             "updated_at",
             "media_files",
             "like_count",
-            "comment_count"
+            "comment_count",
             "is_liked",
         ]
 
