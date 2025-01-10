@@ -31,6 +31,7 @@ class ContentSerializer(serializers.ModelSerializer):
             "updated_at",
             "media_files",
             "like_count",
+            "comment_count"
         ]
 
     def get_profile(self, obj):
