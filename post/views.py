@@ -30,7 +30,7 @@ class ContentViewSet(viewsets.ModelViewSet):
         content.media_files.set(media_files)
 
     @action(detail=True, methods=["post"])
-    def like(self, request, pk=None):
+    def like(self, request, pk=None, **kwargs):
         content = self.get_object()
         like, created = Like.objects.get_or_create(user=request.user, content=content)
         if not created:
@@ -39,7 +39,7 @@ class ContentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["post"])
-    def unlike(self, request, pk=None):
+    def unlike(self, request, pk=None, **kwargs):
         content = self.get_object()
         try:
             like = Like.objects.get(user=request.user, content=content)
@@ -49,7 +49,7 @@ class ContentViewSet(viewsets.ModelViewSet):
             return Response({"detail": "You have not liked this content"}, status=status.HTTP_400_BAD_REQUEST)
         
     @action(detail=True, methods=["get"])
-    def likes(self, request, pk=None):
+    def likes(self, request, pk=None, **kwargs):
         content = self.get_object()
         likes = Like.objects.filter(content=content)
         serializer = LikeSerializer(likes, many=True)
