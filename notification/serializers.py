@@ -19,4 +19,4 @@ class NotificationSerializer(serializers.ModelSerializer):
         read_only_fields = ["created_at", "is_read"]
 
     def get_source_user(self, obj):
-        return obj.content.user
+        return obj.content.user.id
