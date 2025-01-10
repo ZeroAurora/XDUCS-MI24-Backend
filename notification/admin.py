@@ -20,4 +20,4 @@ class NotificationAdmin(admin.ModelAdmin):
     mark_as_unread.short_description = "Mark selected notifications as unread"
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('user', 'content')
+        return super().get_queryset(request).select_related("user", "content")

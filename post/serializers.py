@@ -10,7 +10,7 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ["id", "profile", "created_at"]
-    
+
     def get_profile(self, obj):
         return ProfileSerializer(obj.user.profile).data
 
@@ -39,13 +39,13 @@ class ContentSerializer(serializers.ModelSerializer):
 
     def get_profile(self, obj):
         return ProfileSerializer(obj.user.profile).data
-    
+
     def get_like_count(self, obj):
         return obj.likes.count()
-    
+
     def get_comment_count(self, obj):
         return obj.children.count()
-    
+
     def get_is_liked(self, obj):
         """Note: requires request context"""
         user = self.context["request"].user

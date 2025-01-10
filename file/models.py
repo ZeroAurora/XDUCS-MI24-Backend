@@ -3,9 +3,11 @@ import os
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 def generate_random_filename(instance, filename):
     ext = os.path.splitext(filename)[1]
     return f"media_files/{instance.id}{ext}"
+
 
 User = get_user_model()
 

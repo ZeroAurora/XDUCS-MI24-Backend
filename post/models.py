@@ -8,12 +8,12 @@ class Content(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     media_files = models.ManyToManyField(MediaFile, blank=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         if self.is_post:

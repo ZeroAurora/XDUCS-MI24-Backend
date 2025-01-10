@@ -17,7 +17,7 @@ class ContentViewSet(viewsets.ModelViewSet):
             return Content.objects.filter(parent=self.kwargs["post_pk"])
         else:
             return Content.objects.filter(parent__isnull=True)
-    
+
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
         ctx["request"] = self.request
@@ -47,7 +47,7 @@ class ContentViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Like.DoesNotExist:
             return Response({"detail": "You have not liked this content"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
     @action(detail=True, methods=["get"])
     def likes(self, request, pk=None, **kwargs):
         content = self.get_object()
